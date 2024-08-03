@@ -14,13 +14,16 @@ RUN apt-get install -y code
 
 # Install dev dependencies
 RUN apt-get install -y zsh git curl
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+
+RUN echo "VSCODE_CLI_USE_FILE_KEYCHAIN=1" >> /etc/environment
 
 RUN adduser user
 RUN chsh -s /bin/zsh user
 RUN usermod -aG sudo user
 USER user
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-CMD code tunnel
+ENTRYPOINT code tunnel --name headless-code
